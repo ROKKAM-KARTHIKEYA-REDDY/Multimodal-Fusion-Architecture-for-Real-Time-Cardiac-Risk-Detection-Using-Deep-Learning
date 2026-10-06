@@ -18,3 +18,4 @@ Pillow==10.4.0
 reportlab==4.2.5
 gunicorn==23.0.0
 psycopg2-binary==2.9.9
+python-telegram-bot==21.10

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-theme="dark">
+<html data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,21 +8,21 @@
   <style>
     :root {
       --card-radius: 14px;
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.25), 0 1px 3px rgba(0,0,0,0.2);
-      --shadow-md: 0 8px 24px rgba(0,0,0,0.28);
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 8px 24px rgba(0,0,0,0.12);
       --brand: #4d9eff;
       --ok: #33b679;
       --warn: #f6ad55;
       --bad: #ef5350;
-      --surface: #121418;
-      --surface-2: #171a1f;
-      --surface-3: #1e222a;
-      --text: #e6e8ee;
+      --surface: #ffffff;
+      --surface-2: #f5f5f5;
+      --surface-3: #eeeeee;
+      --text: #000000;
     }
     body { background: var(--surface); color: var(--text); }
     main.container { padding-bottom: 2rem; width: min(1100px, 92vw); margin: 0 auto; }
     .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
-    .card { border-radius: var(--card-radius); padding: 1rem 1.1rem; box-shadow: var(--shadow-sm); background: var(--surface-2); border: 1px solid #232833; }
+    .card { border-radius: var(--card-radius); padding: 1rem 1.1rem; box-shadow: var(--shadow-sm); background: var(--surface-2); border: 1px solid #e0e0e0; }
     .card h3 { margin-bottom: .25rem; color: var(--text); }
     .card .value { font-size: 1.6rem; font-weight: 700; }
     .card.ok { border-left: 4px solid var(--ok); }
@@ -31,16 +31,116 @@
     .card.small { padding: .75rem .85rem; max-width: 260px; }
     .card.small h3 { font-size: 1rem; margin-bottom: .5rem; }
     .btn-sm { font-size: .9rem !important; padding: .4rem .6rem !important; line-height: 1.1 !important; }
-    .panel { background: var(--surface-2); border: 1px solid #232833; border-radius: var(--card-radius); padding: 1rem 1.1rem; box-shadow: var(--shadow-sm); width: min(100%, 1000px); margin: 0 auto; }
+    .panel { background: var(--surface-2); border: 1px solid #e0e0e0; border-radius: var(--card-radius); padding: 1rem 1.1rem; box-shadow: var(--shadow-sm); width: min(100%, 1000px); margin: 0 auto; }
     .centered { width: 100%; display: flex; justify-content: center; }
     table { border-collapse: collapse; width: 100%; overflow: hidden; border-radius: 10px; box-shadow: var(--shadow-sm); }
     table thead tr { background: var(--surface-3); }
     table th, table td { padding: .7rem .8rem; vertical-align: top; }
     table td { word-break: break-word; }
-    table tbody tr:not(:last-child) { border-bottom: 1px solid #2a2f3a; }
+    table tbody tr:not(:last-child) { border-bottom: 1px solid #e0e0e0; }
     .toolbar { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; }
     .toolbar a[role="button"], .toolbar button { box-shadow: var(--shadow-sm); }
-    .hero { padding: 1rem 1.2rem; border-radius: var(--card-radius); background: linear-gradient(135deg, #0f1320, #161a22); box-shadow: var(--shadow-md); margin-bottom: 1rem; border: 1px solid #232833; }
+    .hero { padding: 1rem 1.2rem; border-radius: var(--card-radius); background: linear-gradient(135deg, #f5f5f5, #e8e8e8); box-shadow: var(--shadow-md); margin-bottom: 1rem; border: 1px solid #e0e0e0; }
+    
+    /* Embedded Chatbot Widget */
+    .chat-container {
+      position: fixed;
+      bottom: 5rem;
+      right: 2rem;
+      width: 350px;
+      max-height: 500px;
+      background: var(--surface-2);
+      border: 1px solid #e0e0e0;
+      border-radius: var(--card-radius);
+      box-shadow: var(--shadow-md);
+      display: none;
+      flex-direction: column;
+      z-index: 1001;
+      overflow: hidden;
+    }
+    .chat-header {
+      background: var(--surface-3);
+      padding: 0.8rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .chat-header h4 { margin: 0; font-size: 1rem; }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      min-height: 300px;
+    }
+    .message {
+      max-width: 85%;
+      padding: 0.6rem 0.8rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    .message.bot {
+      background: var(--surface-3);
+      align-self: flex-start;
+      border-bottom-left-radius: 2px;
+    }
+    .message.user {
+      background: var(--brand);
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 2px;
+    }
+    .chat-input-area {
+      padding: 0.8rem;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .chat-input-area input {
+      flex: 1;
+      margin-bottom: 0 !important;
+      padding: 0.4rem 0.6rem !important;
+    }
+    .chat-input-area button {
+      padding: 0.4rem 0.8rem !important;
+      width: auto !important;
+      margin-bottom: 0 !important;
+    }
+    .chat-toggle {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 60px;
+      height: 60px;
+      background: var(--brand);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+      z-index: 1000;
+      transition: transform 0.2s;
+    }
+    .chat-toggle:hover { transform: scale(1.1); }
+    .chat-toggle svg { width: 30px; height: 30px; fill: white; }
+    
+    .suggestions {
+      display: flex;
+      gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      overflow-x: auto;
+      background: var(--surface);
+    }
+    .suggestion-btn {
+      white-space: nowrap;
+      padding: 0.25rem 0.6rem !important;
+      font-size: 0.8rem !important;
+    }
   </style>
 </head>
 <body>
@@ -63,5 +163,72 @@
   <main class="container">
     {% block content %}{% endblock %}
   </main>
+
+  <!-- Chatbot Widget -->
+  <div class="chat-toggle" onclick="toggleChat()" id="chat-toggle">
+    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
+  </div>
+
+  <div class="chat-container" id="chat-container">
+    <div class="chat-header">
+      <h4>Heart Assistant</h4>
+      <button class="btn-sm contrast outline" onclick="toggleChat()" style="margin:0; padding: 2px 8px;">✕</button>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="message bot">Hello! How can I help you today?</div>
+    </div>
+    <div class="suggestions">
+      <button class="suggestion-btn btn-sm secondary" onclick="sendSuggestion('tips')">Health Tips</button>
+      <button class="suggestion-btn btn-sm secondary" onclick="sendSuggestion('report')">Latest Report</button>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="chat-input" placeholder="Type your query..." onkeypress="if(event.key==='Enter') sendMessage()">
+      <button class="btn-sm" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const chatContainer = document.getElementById('chat-container');
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+
+    function toggleChat() {
+      chatContainer.style.display = chatContainer.style.display === 'flex' ? 'none' : 'flex';
+      if (chatContainer.style.display === 'flex') chatInput.focus();
+    }
+
+    function addMessage(text, role) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `message ${role}`;
+      // Basic markdown-like formatting for bold and links
+      let formattedText = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
+      msgDiv.innerHTML = formattedText;
+      chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const query = chatInput.value.trim();
+      if (!query) return;
+
+      addMessage(query, 'user');
+      chatInput.value = '';
+
+      try {
+        const response = await fetch(`/chatbot/query?query=${encodeURIComponent(query)}`);
+        const data = await response.json();
+        addMessage(data.response, 'bot');
+      } catch (e) {
+        addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+      }
+    }
+
+    function sendSuggestion(text) {
+      chatInput.value = text;
+      sendMessage();
+    }
+  </script>
 </body>
 </html>

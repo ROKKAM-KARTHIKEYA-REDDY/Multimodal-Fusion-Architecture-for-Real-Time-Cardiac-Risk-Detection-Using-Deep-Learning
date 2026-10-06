@@ -15,6 +15,7 @@ from .routers import report_routes
 from .routers import profile_routes
 from .routers import heart_routes
 from .routers import fusion_routes
+from .routers import chatbot_routes
 
 # Load .env from project root
 load_dotenv()
@@ -38,6 +39,7 @@ app.include_router(profile_routes.router, tags=["profile"])
 app.include_router(ppg_routes.router, prefix="/ppg", tags=["ppg"])
 app.include_router(heart_routes.router, tags=["heart"]) 
 app.include_router(fusion_routes.router, tags=["fusion"]) 
+app.include_router(chatbot_routes.router, tags=["chatbot"])
 
 @app.on_event("startup")
 async def on_startup():
